@@ -20,7 +20,11 @@ impl DbService {
             .max_connections(pool_config.max_connections)
             .connect(&url)
             .await?;
-
         Ok(Self { pool })
+    }
+
+    pub async fn migrate(&self) -> Result<(), DbServiceError> {
+        sqlx::migrate!("../migrations").run(&self.pool).await?;
+        Ok(())
     }
 }

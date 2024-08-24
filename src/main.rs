@@ -10,6 +10,8 @@ async fn main() -> Result<(), anyhow::Error> {
     let config = config();
     let db_service = services::create_db_service(&config.focus("postgres")).await?;
 
+    db_service.migrate().await?;
+
     build()
         .manage(db_service)
         .mount("/", routes![::routes::index])
